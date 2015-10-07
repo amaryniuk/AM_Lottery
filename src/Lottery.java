@@ -1,5 +1,3 @@
-package AM_Lottery;
-
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,7 +5,6 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Lottery {
-
     public static void main(String args[]) {
 
         int ticketsSold = 0;
@@ -16,21 +13,40 @@ public class Lottery {
         String command = null;
         String buyerName = null;
 
-        System.out.println("What do you want to do? Purchase or Draw");
+        // Add tickets to an array, then shuffle the array, then sell them in that order
+        int numTickets = 10;
+
+        List<Integer> ballsArray = new ArrayList<Integer>();
+        List<Object> ticketsSoldArray = new ArrayList<Object>();
+
+        createTickets(ballsArray, numTickets);
+
+
+
+        System.out.println("What do you want to do? Purchase, Draw, Winners, New Game, Quit.");
 
         Scanner scanner = new Scanner(System.in);
 
 
         while((command = scanner.nextLine()) != null) {
-            if("purchase".equalsIgnoreCase(command)) {
+            if("p".equalsIgnoreCase(command) || "purchase".equalsIgnoreCase(command)) {
 
                 System.out.println("What is the buyer's name?");
                 buyerName = scanner.nextLine();
-                ballNumberChosen = tickets.get()
+                ballNumberChosen = ballsArray.get(ticketsSold);
 
+
+              ticketsSoldArray.add(new Ticket(buyerName, ballNumberChosen));
+//                Ticket newTicket = new Ticket(buyerName, ballNumberChosen);
+//                ticketsSoldArray.add(newTicket);
+//                newTicket.printTicket();
+
+
+                System.out.println(ticketsSoldArray.toString()); //
+                ticketsSold++;
 
             }
-            else if("draw".equalsIgnoreCase(command)) {
+            else if("d".equalsIgnoreCase(command) || "draw".equalsIgnoreCase(command)) {
                 System.out.println("Draw");
 
             }
@@ -48,27 +64,15 @@ public class Lottery {
             }
         }
 
-        createTickets();
     }
 
+    public static void createTickets(List<Integer> tic, int numTic) {
 
-
-    public static void createTickets() {
-
-        // Add tickets to an array, then shuffle the array, then sell them in that order
-        int numTickets = 10;
-
-        public List<Integer> tickets = new ArrayList<Integer>();
-
-        for (int i = 1; i <= numTickets; i++) {
-            tickets.add(i);
+        for (int i = 1; i <= numTic; i++) {
+            tic.add(i);
         }
-
-        Collections.shuffle(tickets);
-
-        for (int i = 0; i < numTickets; i++) {
-            System.out.println(tickets.get(i));
-        }
+        Collections.shuffle(tic);
+        System.out.println(tic);
     }
 }
 

@@ -1,13 +1,7 @@
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-/**
- * Created by Alan on 15-09-30.
- */
-
-
-
-
 
 
 public class Draw {
