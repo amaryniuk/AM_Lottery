@@ -9,55 +9,72 @@ public class Lottery {
 
         int ticketsSold = 0;
         int ballNumberChosen = 0;
-        float pot = 0;
+        float pot = 200;
         String command = null;
         String buyerName = null;
 
         // Add tickets to an array, then shuffle the array, then sell them in that order
-        int numTickets = 10;
+        int numTickets = 5;
 
-        List<Integer> ballsArray = new ArrayList<Integer>();
-        List<Object> ticketsSoldArray = new ArrayList<Object>();
+        ArrayList<Integer> ballsArray = new ArrayList<Integer>();
+        ArrayList<Ticket> ticketsSoldArray = new ArrayList<Ticket>();
+
+
 
         createTickets(ballsArray, numTickets);
 
-
-
-        System.out.println("What do you want to do? Purchase, Draw, Winners, New Game, Quit.");
+        System.out.println("[P] Purchase, [D] Draw, [W] Winners, [N] New Game, [V] View Tickets, [Q] Quit.");
 
         Scanner scanner = new Scanner(System.in);
 
+        while ((command = scanner.nextLine()) != null) {
 
-        while((command = scanner.nextLine()) != null) {
-            if("p".equalsIgnoreCase(command) || "purchase".equalsIgnoreCase(command)) {
+            if (ticketsSold >= numTickets) {
+                System.out.println("Tickets are all sold out. Time for a draw");
+                command = "draw";   //
+            }
+
+            if ("Purchase".equalsIgnoreCase(command) || "p".equalsIgnoreCase(command)) {
 
                 System.out.println("What is the buyer's name?");
                 buyerName = scanner.nextLine();
                 ballNumberChosen = ballsArray.get(ticketsSold);
-
-
-              ticketsSoldArray.add(new Ticket(buyerName, ballNumberChosen));
-//                Ticket newTicket = new Ticket(buyerName, ballNumberChosen);
-//                ticketsSoldArray.add(newTicket);
-//                newTicket.printTicket();
-
-
-                System.out.println(ticketsSoldArray.toString()); //
+                ticketsSoldArray.add(new Ticket(buyerName, ballNumberChosen));
+                System.out.println(buyerName + ", your ticket number is: " + ballNumberChosen + ". Good Luck!");
                 ticketsSold++;
-
             }
-            else if("d".equalsIgnoreCase(command) || "draw".equalsIgnoreCase(command)) {
+
+            else if ("Draw".equalsIgnoreCase(command) || "d".equalsIgnoreCase(command)) {
                 System.out.println("Draw");
 
             }
-            else if("winners".equalsIgnoreCase(command)) {
+
+            else if ("Winners".equalsIgnoreCase(command) || "w".equalsIgnoreCase(command)) {
                 System.out.println("Winners:");
 
             }
-            else if("new game".equalsIgnoreCase(command)) {
-                System.out.println("New Game");
+
+            else if ("New Game".equalsIgnoreCase(command) || "n".equalsIgnoreCase(command)) {
+                System.out.println("New Game Created");
+                ticketsSold = 0;
+                ballsArray.clear();
+                ticketsSoldArray.clear();
+                createTickets(ballsArray, numTickets);
 
             }
+
+            else if ("View Tickets".equalsIgnoreCase(command) || "v".equalsIgnoreCase(command)) {
+                for (Ticket t: ticketsSoldArray) {
+                    t.printTicket();
+                }
+
+            }
+
+            else if ("Quit".equalsIgnoreCase(command) || "q".equalsIgnoreCase(command)) {
+                System.out.println("Thanks for playing!");
+                break;
+            }
+
             else {
                 System.out.println("No Command Given.");
 
@@ -66,13 +83,12 @@ public class Lottery {
 
     }
 
-    public static void createTickets(List<Integer> tic, int numTic) {
-
-        for (int i = 1; i <= numTic; i++) {
-            tic.add(i);
+    public static void createTickets(List<Integer> tics, int numTics) {
+        for (int i = 1; i <= numTics; i++) {
+            tics.add(i);
         }
-        Collections.shuffle(tic);
-        System.out.println(tic);
+        Collections.shuffle(tics);
+        System.out.println(tics);
     }
 }
 
