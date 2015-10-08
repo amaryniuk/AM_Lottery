@@ -122,7 +122,7 @@ public class Lottery {
                 thirdWinner = t;
             }
         }
-// test
+
         if (firstWinner != null) {
             payout1 = p.multiply(new BigDecimal("0.375"));
             payout = payout1.doubleValue();
