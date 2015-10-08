@@ -12,7 +12,7 @@ public class Ticket {
         return name;
     }
 
-    public int getTicket() {
+    public int getTicketNumber() {
         return ballNumberChosen;
     }
 
