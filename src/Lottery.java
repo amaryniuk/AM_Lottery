@@ -1,12 +1,11 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Scanner;
+import java.math.*;
+import java.text.NumberFormat;
+import java.util.*;
 
 public class Lottery {
 
     // Add tickets to an array, then shuffle the array, then sell them in that order
-    static int numTickets = 10;
+    static int numTickets = 8;
 
     // for new game
     static int ticketsSold = 0;
@@ -20,16 +19,14 @@ public class Lottery {
     public static void main(String args[]) {
 
         int ballNumberChosen;
-        float pot = 200;
+        BigDecimal pot = new BigDecimal("200.00");
+        BigDecimal ticketCost = new BigDecimal("10.00");
         String command;
         String buyerName = null;
 
-        createTickets(ticketList, numTickets);
-
-        System.out.println("[P] Purchase, [D] Draw, [W] Winners, [N] New Game, [V] View Tickets, [Q] Quit.");
+        newGame();
 
         Scanner scanner = new Scanner(System.in);
-
         while ((command = scanner.nextLine()) != null) {
 
             if (ticketsSold >= numTickets) {
@@ -43,6 +40,7 @@ public class Lottery {
                 ballNumberChosen = ticketList.get(ticketsSold);
                 ticketsSoldList.add(new Ticket(buyerName, ballNumberChosen));
                 ticketsSold++;
+                pot = pot.add(ticketCost);
                 System.out.println(buyerName + ", your ticket number is: " + ballNumberChosen + ". Good Luck!");
             }
 
@@ -55,12 +53,12 @@ public class Lottery {
                 secondBall = d.get2Ball();
                 thirdBall = d.get3Ball();
 
-                findWinners();
+                findWinners(pot);
                 newGame();
             }
 
             else if ("Winners".equalsIgnoreCase(command) || "w".equalsIgnoreCase(command)) {
-                findWinners();
+                findWinners(pot);
             }
 
             else if ("New Game".equalsIgnoreCase(command) || "n".equalsIgnoreCase(command)) {
@@ -71,6 +69,7 @@ public class Lottery {
                 for (Ticket t: ticketsSoldList) {
                     t.printTicket();
                 }
+                System.out.println("Cash in the pot: $" + pot);
             }
 
             else if ("Quit".equalsIgnoreCase(command) || "q".equalsIgnoreCase(command)) {
@@ -93,7 +92,7 @@ public class Lottery {
     }
 
     public static void newGame() {
-        System.out.println("New Game Created");
+        System.out.println("New Game: [P] Purchase, [D] Draw, [W] Winners, [N] New Game, [V] View Tickets, [Q] Quit.");
         ticketsSold = 0;
         firstBall = 0; secondBall = 0; thirdBall = 0;
         firstWinner = null; secondWinner = null; thirdWinner = null;
@@ -102,7 +101,16 @@ public class Lottery {
         createTickets(ticketList, numTickets);
     }
 
-    public static void findWinners() {
+    public static void findWinners(BigDecimal p) {
+
+        String s;
+        double payout;
+
+        BigDecimal payout1 = new BigDecimal("0");
+        BigDecimal payout2 = new BigDecimal("0");
+        BigDecimal payout3 = new BigDecimal("0");
+        NumberFormat n = NumberFormat.getCurrencyInstance(Locale.CANADA);
+
         for (Ticket t: ticketsSoldList) {
             if (t.getTicketNumber() == firstBall) {
                 firstWinner = t;
@@ -114,20 +122,32 @@ public class Lottery {
                 thirdWinner = t;
             }
         }
+
         if (firstWinner != null) {
-            System.out.println(firstWinner.getName() + " wins the 1st place prize for picking ball " + firstWinner.getTicketNumber() + ".");
+            payout1 = p.multiply(new BigDecimal("0.375"));
+            payout = payout1.doubleValue();
+            s = n.format(payout);
+            System.out.println(firstWinner.getName() + " wins 1st prize for ticket # " + firstWinner.getTicketNumber() + ". Prize money: $" + payout);
         }
         else {
             System.out.println("No 1st place winner. Prize money returns to the pot.");
         }
+
         if (secondWinner != null) {
-            System.out.println(secondWinner.getName() + " wins the 2nd place prize for picking ball " + secondWinner.getTicketNumber() + ".");
+            payout2 = p.multiply(new BigDecimal("0.075"));
+            payout = payout2.doubleValue();
+            s = n.format(payout);
+            System.out.println(secondWinner.getName() + " wins 2nd prize for ticket # " + secondWinner.getTicketNumber() + ". Prize money: $" + payout);
         }
         else {
             System.out.println("No 2nd place winner. Prize money returns to the pot.");
         }
+
         if (thirdWinner != null) {
-            System.out.println(thirdWinner.getName() + " wins the 3rd place prize for picking ball " + thirdWinner.getTicketNumber() + ".");
+            payout3 = p.multiply(new BigDecimal("0.05"));
+            payout = payout3.doubleValue();
+            s = n.format(payout);
+            System.out.println(thirdWinner.getName() + " wins 3rd prize for ticket # " + thirdWinner.getTicketNumber() + ". Prize money: $" + payout);
         }
         else {
             System.out.println("No 3rd place winner. Prize money returns to the pot.");
