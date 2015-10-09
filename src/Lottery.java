@@ -1,16 +1,15 @@
 import java.math.*;
-import java.text.NumberFormat;
 import java.util.*;
 
 public class Lottery {
 
     // Add tickets to an array, then shuffle the array, then sell them in that order
-    static int numTickets = 8;
+    static int numTickets = 10;
 
     // for new game
     static int ticketsSold = 0;
-    static List<Integer> ticketList = new ArrayList<Integer>();
-    static List<Ticket> ticketsSoldList = new ArrayList<Ticket>();
+    static List<Integer> ticketList = new ArrayList<>();
+    static List<Ticket> ticketsSoldList = new ArrayList<>();
 
     // for find winners
     static int firstBall = 0, secondBall = 0, thirdBall = 0;
@@ -19,10 +18,10 @@ public class Lottery {
     public static void main(String args[]) {
 
         int ballNumberChosen;
+        String command;
+        String buyerName;
         BigDecimal pot = new BigDecimal("200.00");
         BigDecimal ticketCost = new BigDecimal("10.00");
-        String command;
-        String buyerName = null;
 
         newGame();
 
@@ -45,7 +44,7 @@ public class Lottery {
             }
 
             else if ("Draw".equalsIgnoreCase(command) || "d".equalsIgnoreCase(command)) {
-
+                System.out.println("\nDraw is happening! The total pot for this round is: $" + pot.toPlainString());
                 Draw d = new Draw(numTickets);
                 d.showBalls();
 
@@ -54,11 +53,12 @@ public class Lottery {
                 thirdBall = d.get3Ball();
 
                 findWinners(pot);
+                pot = payoutWinners(pot);
                 newGame();
             }
 
             else if ("Winners".equalsIgnoreCase(command) || "w".equalsIgnoreCase(command)) {
-                findWinners(pot);
+                pot = payoutWinners(pot);
             }
 
             else if ("New Game".equalsIgnoreCase(command) || "n".equalsIgnoreCase(command)) {
@@ -66,7 +66,7 @@ public class Lottery {
             }
 
             else if ("View Tickets".equalsIgnoreCase(command) || "v".equalsIgnoreCase(command)) {
-                for (Ticket t: ticketsSoldList) {
+                for (Ticket t : ticketsSoldList) {
                     t.printTicket();
                 }
                 System.out.println("Cash in the pot: $" + pot);
@@ -92,66 +92,62 @@ public class Lottery {
     }
 
     public static void newGame() {
-        System.out.println("New Game: [P] Purchase, [D] Draw, [W] Winners, [N] New Game, [V] View Tickets, [Q] Quit.");
+        System.out.println("\n\nNew Game: [P] Purchase, [D] Draw, [W] Winners, [N] New Game, [V] View Tickets, [Q] Quit.");
         ticketsSold = 0;
-        firstBall = 0; secondBall = 0; thirdBall = 0;
-        firstWinner = null; secondWinner = null; thirdWinner = null;
+        firstBall = 0;
+        secondBall = 0;
+        thirdBall = 0;
+        firstWinner = null;
+        secondWinner = null;
+        thirdWinner = null;
         ticketList.clear();
         ticketsSoldList.clear();
         createTickets(ticketList, numTickets);
     }
 
-    public static void findWinners(BigDecimal p) {
+    public static void findWinners(BigDecimal pot) {
 
-        String s;
-        double payout;
-
-        BigDecimal payout1 = new BigDecimal("0");
-        BigDecimal payout2 = new BigDecimal("0");
-        BigDecimal payout3 = new BigDecimal("0");
-        NumberFormat n = NumberFormat.getCurrencyInstance(Locale.CANADA);
-
-        for (Ticket t: ticketsSoldList) {
+        for (Ticket t : ticketsSoldList) {
             if (t.getTicketNumber() == firstBall) {
                 firstWinner = t;
+                firstWinner.setWinnings(pot.multiply(new BigDecimal("0.375")));
             }
+
             if (t.getTicketNumber() == secondBall) {
                 secondWinner = t;
+                secondWinner.setWinnings(pot.multiply(new BigDecimal("0.075")));
             }
+
             if (t.getTicketNumber() == thirdBall) {
                 thirdWinner = t;
+                thirdWinner.setWinnings(pot.multiply(new BigDecimal("0.05")));
             }
         }
+    }
 
+    public static BigDecimal payoutWinners(BigDecimal pot) {
         if (firstWinner != null) {
-            payout1 = p.multiply(new BigDecimal("0.375"));
-            payout = payout1.doubleValue();
-            s = n.format(payout);
-            System.out.println(firstWinner.getName() + " wins 1st prize for ticket # " + firstWinner.getTicketNumber() + ". Prize money: $" + payout);
+            System.out.println(firstWinner.getName() + ": $" + firstWinner.getWinnings().toPlainString());
+            pot = pot.subtract(firstWinner.getWinnings());
         }
-        else {
-            System.out.println("No 1st place winner. Prize money returns to the pot.");
-        }
+        else
+            System.out.println("No 1st winner.");
 
         if (secondWinner != null) {
-            payout2 = p.multiply(new BigDecimal("0.075"));
-            payout = payout2.doubleValue();
-            s = n.format(payout);
-            System.out.println(secondWinner.getName() + " wins 2nd prize for ticket # " + secondWinner.getTicketNumber() + ". Prize money: $" + payout);
+            System.out.println(secondWinner.getName() + ": $" + secondWinner.getWinnings().toPlainString());
+            pot = pot.subtract(secondWinner.getWinnings());
         }
-        else {
-            System.out.println("No 2nd place winner. Prize money returns to the pot.");
-        }
+        else
+            System.out.println("No 2nd winner.");
 
         if (thirdWinner != null) {
-            payout3 = p.multiply(new BigDecimal("0.05"));
-            payout = payout3.doubleValue();
-            s = n.format(payout);
-            System.out.println(thirdWinner.getName() + " wins 3rd prize for ticket # " + thirdWinner.getTicketNumber() + ". Prize money: $" + payout);
+            System.out.println(thirdWinner.getName() + ": $" + thirdWinner.getWinnings().toPlainString());
+            pot = pot.subtract(thirdWinner.getWinnings());
         }
-        else {
-            System.out.println("No 3rd place winner. Prize money returns to the pot.");
-        }
+        else
+            System.out.println("No 3rd winner.");
+
+        System.out.println("\nRemaining amount in pot for next game:" + pot.toPlainString());
+        return pot;
     }
 }
-

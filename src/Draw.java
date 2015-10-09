@@ -4,10 +4,10 @@ import java.util.List;
 
 public class Draw {
 
-    int firstBall, secondBall, thirdBall;
+    private int firstBall, secondBall, thirdBall;
     private int numberOfBalls;
 
-    List<Integer> ballMachine = new ArrayList<Integer>();
+    List<Integer> ballMachine = new ArrayList<>();
 
     public Draw(int nB) {
         numberOfBalls = nB;
@@ -27,11 +27,6 @@ public class Draw {
     public int get3Ball() { return thirdBall; }
 
     public void showBalls() {
-        System.out.println("First Ball: " + firstBall + ". Second Ball: " + secondBall + ". ThirdBall: " + thirdBall + ".");
+        System.out.println("First Ball: " + firstBall + ". Second Ball: " + secondBall + ". ThirdBall: " + thirdBall + ".\n");
     }
-
-    public void findWinners() {
-
-    }
-
 }
